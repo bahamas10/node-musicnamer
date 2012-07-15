@@ -43,7 +43,7 @@ function usage() {
     '  --dry-run | -n: Don\'t actually rename files, just print what actions would be taken',
     '  --tags    | -t: Just print the tags from the files processesd, assumes --dry-run',
     '  --help    | -h: Print this message and exit',
-    '',
+    ''
   ].join('\n'), path.basename(process.argv[1]), default_config.format, config_file);
 }
 
@@ -53,7 +53,7 @@ function usage() {
  * Check a given set of metadata to make sure all tags are present
  */
 function check_tags(meta) {
-  return meta.album && meta.title && meta.artist.length != 0;
+  return meta.album && meta.title && meta.artist.length !== 0;
 }
 
 /**
@@ -80,7 +80,7 @@ switch (args[0]) {
     process.exit(0);
   case '-i': case '--init':
     console.log('Writing config to %s', config_file);
-    fs.writeFileSync(config_file, JSON.stringify(default_config, null, 2))
+    fs.writeFileSync(config_file, JSON.stringify(default_config, null, 2));
     process.exit(0);
   case '-n': case '--dry-run':
     dry_run = true;
