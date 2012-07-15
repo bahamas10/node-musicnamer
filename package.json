@@ -1,0 +1,24 @@
+{
+  "name": "musicnamer",
+  "description": "Organize your music collection",
+  "author": "Dave Eddy <dave@daveeddy.com> (http://www.daveeddy.com)",
+  "version": "0.0.0",
+  "repository": {
+    "url": "https://github.com/bahamas10/node-musicnamer.git",
+    "type": "git"
+  },
+  "main": "./bin/musicnamer.js",
+  "dependencies": {
+    "musicmetadata": "~ 0.1.7",
+    "mkdirp": "~ 0.3.3"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "bin": {
+    "musicnamer": "./bin/musicnamer.js"
+  },
+  "engines": {
+    "node": "*"
+  },
+  "keywords": [ "music", "organize", "mp3", "flac", "tvnamer" ]
+}
