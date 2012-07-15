@@ -62,14 +62,14 @@ Now let's say we wanted to rename a bunch of files, but were worried about modif
 them without testing.  You can run `musicnamer` with a dry run option to show what action
 *would* have been taken.
 
-    dave @ [ bahamas10 :: (SunOS) ] ~ $ musicnamer somesong.mp3
+    dave @ [ bahamas10 :: (SunOS) ] ~ $ musicnamer --dry-run somesong.mp3
     ----- processing somesong.mp3 -----
 
     Moving: somesong.mp3
     ->  To: BEING/Arrival/12 - The Singularity (Cosmists II).mp3
     No action taken
 
-As you can see, the warning message now longer shows because we have created a config file.
+As you can see, the warning message no longer shows because we have created a config file.
 Also, `musicnamer` just printed out what it would have done, but didn't actually call rename(2)
 on any of the files.
 
