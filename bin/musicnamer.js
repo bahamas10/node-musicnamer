@@ -17,6 +17,7 @@ var fs = require('fs'),
     util = require('util'),
     musicmetadata = require('musicmetadata'),
     mkdirp = require('mkdirp'),
+    version = require('../package.json').version,
     args = process.argv.slice(2),
     config_file = path.join(process.env["HOME"], '.musicnamer.json'),
     tags_only = false,
@@ -43,6 +44,7 @@ function usage() {
     '  --dry-run | -n: Don\'t actually rename files, just print what actions would be taken',
     '  --tags    | -t: Just print the tags from the files processesd, assumes --dry-run',
     '  --help    | -h: Print this message and exit',
+    '  --version | -v: Print the version number and exit',
     ''
   ].join('\n'), path.basename(process.argv[1]), default_config.format, config_file);
 }
@@ -77,6 +79,9 @@ if (args.length === 0) {
 switch (args[0]) {
   case '-h': case '--help':
     console.log(usage());
+    process.exit(0);
+  case '-v': case '--version':
+    console.log(version);
     process.exit(0);
   case '-i': case '--init':
     console.log('Writing config to %s', config_file);
