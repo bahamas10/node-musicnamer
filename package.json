@@ -2,7 +2,7 @@
   "name": "musicnamer",
   "description": "Organize your music collection",
   "author": "Dave Eddy <dave@daveeddy.com> (http://www.daveeddy.com)",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "repository": {
     "url": "https://github.com/bahamas10/node-musicnamer.git",
     "type": "git"
