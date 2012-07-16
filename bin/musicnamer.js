@@ -102,7 +102,7 @@ var config = {};
 try {
   config = JSON.parse(fs.readFileSync(config_file));
 } catch (e) {
-  console.error('Error reading %s, Invoke with --init to create this file\n',
+  console.error('Error reading %s -- invoke with --init to create this file\n',
       config_file);
 }
 

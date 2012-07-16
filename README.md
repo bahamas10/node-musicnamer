@@ -38,7 +38,7 @@ Examples
 To invoke `musicnamer`, simply pass a file over the command line as an argument
 
     dave @ [ bahamas10 :: (SunOS) ] ~ $ musicnamer somesong.mp3
-    Error reading /home/dave/.musicnamer.json, Invoke with --init to create this file
+    Error reading /home/dave/.musicnamer.json -- invoke with --init to create this file
 
     ----- processing somesong.mp3 -----
 
