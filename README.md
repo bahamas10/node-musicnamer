@@ -3,7 +3,7 @@ musicnamer
 
 Organize your music collection
 
-`musicnamer` is used to rename music files to clean filenames based
+Rename music files to clean filenames based
 on their music tags.  By default, `musicnamer` can take your music files
 and rename them to a format like:
 
@@ -47,7 +47,7 @@ To invoke `musicnamer`, simply pass a file over the command line as an argument
 
 Music namer renamed the file for us.  What effectively happened here is this
 
-    mv somesong.mp3 "BEING/Arrival/12 - The Singularity (Cosmists II).mp3"
+    $ mv somesong.mp3 "BEING/Arrival/12 - The Singularity (Cosmists II).mp3"
 
 **NOTE**: `musicnamer` by default renames files relative to your current directory.
 
@@ -121,7 +121,7 @@ has a key called `format`, which has the format to use when renaming files.
       "format": "%artist%/%album%/%trackno% - %title%.%ext%"
     }
 
-The --init option will write out the default format value to the config file, this is the
+The `--init` option will write out the default format value to the config file, this is the
 format that will be used if the config file is not present.
 
 Possible options for variables are:
