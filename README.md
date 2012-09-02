@@ -29,6 +29,7 @@ and it will do its thing on them.
       --init    | -i: Create a config file at ~/.musicnamer.json
       --dry-run | -n: Don't actually rename files, just print what actions would be taken
       --tags    | -t: Just print the tags from the files processesd, assumes --dry-run
+      --updates | -u: Check for available updates
       --version | -v: Print the version number and exit
       --help    | -h: Print this message and exit
 
