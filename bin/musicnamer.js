@@ -64,11 +64,18 @@ function check_tags(meta) {
  */
 function make_new_path(meta) {
   var s = config.format || default_config.format;
-  return s.replace('%artist%', meta.artist[0])
-          .replace('%album%', meta.album)
+  return s.replace('%artist%', filter(meta.artist[0]))
+          .replace('%album%', filter(meta.album))
           .replace('%trackno%', meta.track.no)
-          .replace('%title%', meta.title)
-          .replace('%ext%', meta.ext);
+          .replace('%title%', filter(meta.title))
+          .replace('%ext%', filter(meta.ext));
+}
+
+/**
+ * Filter out bad characters
+ */
+function filter(s) {
+  return s.replace(/\//g, '-');
 }
 
 // Check arguments
