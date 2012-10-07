@@ -68,7 +68,7 @@ function make_new_path(meta) {
   var s = config.format || default_config.format;
   return s.replace('%artist%', filter(meta.artist[0]))
           .replace('%album%', filter(meta.album))
-          .replace('%trackno%', meta.track.no)
+          .replace('%trackno%', pad(meta.track.no))
           .replace('%title%', filter(meta.title))
           .replace('%ext%', filter(meta.ext));
 }
@@ -78,6 +78,15 @@ function make_new_path(meta) {
  */
 function filter(s) {
   return s.replace(/\//g, '-');
+}
+
+/**
+ * pad with leading zero
+ */
+function pad(s) {
+  s = '' + s;
+  if (s.length === 1) s = '0' + s;
+  return s;
 }
 
 // Check arguments
