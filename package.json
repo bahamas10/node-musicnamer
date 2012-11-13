@@ -9,7 +9,7 @@
   },
   "main": "./bin/musicnamer.js",
   "dependencies": {
-    "musicmetadata": "~ 0.1.7",
+    "musicmetadata": "~ 0.1.9",
     "latest": "~ 0.0.1",
     "mkdirp": "~ 0.3.3"
   },
