@@ -7,7 +7,7 @@ Rename music files to clean filenames based
 on their music tags.  By default, `musicnamer` can take your music files
 and rename them to a format like:
 
-    %artist%/%album%/%trackno% - %title%.%ext%
+    :artist/:album/:trackno - :title.:ext
 
 This package is not meant to be used as a Node module, but rather
 as a command line tool
@@ -119,7 +119,7 @@ has a key called `format`, which has the format to use when renaming files.
 
     ~$ cat ~/.musicnamer.json
     {
-      "format": "%artist%/%album%/%trackno% - %title%.%ext%"
+      "format": ":artist/:album/:trackno - :title.:ext"
     }
 
 The `--init` option will write out the default format value to the config file, this is the
