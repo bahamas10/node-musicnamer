@@ -10,8 +10,9 @@
   "main": "./bin/musicnamer.js",
   "dependencies": {
     "musicmetadata": "~ 0.2.0",
-    "latest": "~ 0.0.1",
-    "mkdirp": "~ 0.3.3"
+    "latest": "~ 0.1.0",
+    "mkdirp": "~ 0.3.3",
+    "posix-getopt": "~1.0.0"
   },
   "devDependencies": {},
   "optionalDependencies": {},
@@ -21,5 +22,11 @@
   "engines": {
     "node": "*"
   },
-  "keywords": [ "music", "organize", "mp3", "flac", "tvnamer" ]
+  "keywords": [
+    "music",
+    "organize",
+    "mp3",
+    "flac",
+    "tvnamer"
+  ]
 }

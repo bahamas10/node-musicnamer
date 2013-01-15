@@ -11,21 +11,17 @@
  * Based on TVnamer https://github.com/dbr/tvnamer
  */
 
-// Requires and such
-var fs = require('fs'),
-    path = require('path'),
-    util = require('util'),
-    musicmetadata = require('musicmetadata'),
-    mkdirp = require('mkdirp'),
-    latest = require('latest'),
-    package = require('../package.json'),
-    args = process.argv.slice(2),
-    config_file = path.join(process.env["HOME"], '.musicnamer.json'),
-    tags_only = false,
-    dry_run = false,
-    default_config = {
-      'format': '%artist%/%album%/%trackno% - %title%.%ext%'
-    };
+var fs = require('fs');
+var path = require('path');
+var util = require('util');
+
+var latest = require('latest');
+var mkdirp = require('mkdirp');
+var musicmetadata = require('musicmetadata');
+var getopt = require('posix-getopt');
+
+var configfile = path.join(process.env.HOME, '.musicnamer.json');
+var package = require('../package.json');
 
 /**
  * Usage
@@ -36,19 +32,17 @@ function usage() {
   return util.format([
     'Usage: %s file1.mp3 file2.mp3 file3.mp3 ...',
     '',
-    'Given a list of files from the command line, rename them to',
-    'a clean filename (default \'%s\')',
+    'given a list of files from the command line, rename them',
+    'based on their id3 tags',
     '',
-    '',
-    'Options (must be given as the first argument; all options are mutually exclusive)',
-    '  --init    | -i: Create a config file at %s',
-    '  --dry-run | -n: Don\'t actually rename files, just print what actions would be taken',
-    '  --tags    | -t: Just print the tags from the files processesd, assumes --dry-run',
-    '  --updates | -u: Check for available updates',
-    '  --help    | -h: Print this message and exit',
-    '  --version | -v: Print the version number and exit',
-    ''
-  ].join('\n'), path.basename(process.argv[1]), default_config.format, config_file);
+    '-h|--help   : print this message and exit',
+    '-i|--init   : create a config file at %s',
+    '-f|--format : custom format line to use (defaults to %s)',
+    '-n|--dry-run: don\'t actually rename files, just print what actions would be taken',
+    '-t|--tags   : just print the tags from the files processesd, assumes --dry-run',
+    '-u|--updates: check for available updates',
+    '-v|--version: print the version number and exit'
+  ].join('\n'), path.basename(process.argv[1]), configfile, defaultconfig.format);
 }
 
 /**
@@ -65,12 +59,18 @@ function check_tags(meta) {
  * for the file
  */
 function make_new_path(meta) {
-  var s = config.format || default_config.format;
-  return s.replace('%artist%', filter(meta.artist[0]))
-          .replace('%album%', filter(meta.album))
-          .replace('%trackno%', pad(meta.track.no))
-          .replace('%title%', filter(meta.title))
-          .replace('%ext%', filter(meta.ext));
+  var s = format || config.format || defaultconfig.format;
+  // support the old format
+  return s.replace('%artist%', ':artist')
+          .replace('%album%', ':album')
+          .replace('%trackno%', ':trackno')
+          .replace('%title%', ':title')
+          .replace('%ext%', ':ext')
+          .replace(':artist', filter(meta.artist[0]))
+          .replace(':album', filter(meta.album))
+          .replace(':trackno', pad(meta.track.no))
+          .replace(':title', filter(meta.title))
+          .replace(':ext', filter(meta.ext));
 }
 
 /**
@@ -89,60 +89,79 @@ function pad(s) {
   return s;
 }
 
-// Check arguments
-if (args.length === 0) {
-  console.error(usage());
-  process.exit(1);
-}
-switch (args[0]) {
-  case '-h': case '--help':
-    console.log(usage());
-    process.exit(0);
-  case '-v': case '--version':
-    console.log(package.version);
-    process.exit(0);
-  case '-i': case '--init':
-    console.log('Writing config to %s', config_file);
-    fs.writeFileSync(config_file, JSON.stringify(default_config, null, 2));
-    process.exit(0);
-  case '-n': case '--dry-run':
-    dry_run = true;
-    args = args.slice(1);
-    break;
-  case '-t': case '--tags':
-    tags_only = true;
-    args = args.slice(1);
-    break;
-  case '-u': case '--updates':
-    latest.check_update(package, function(ret, msg) {
-      console.log(msg);
-      process.exit(ret);
-    });
-    return;
-    break;
-}
+// command line arguments
+var options = 'f:(format)h(help)i(init)n(dry-run)t(tags)u(updates)v(version)';
+var parser = new getopt.BasicParser(options, process.argv);
 
-// Try to get the config file
+var tagsonly = false;
+var dryrun = false;
+var format;
+var defaultconfig = {
+  format: ':artist/:album/:trackno - :title.:ext'
+};
+var option;
+while ((option = parser.getopt()) !== undefined) {
+  switch (option.option) {
+    case 'f':
+      format = option.optarg;
+      break;
+    case 'h': // help
+      console.log(usage());
+      process.exit(0);
+      break;
+    case 'i': // init
+      console.log('writing config to %s', configfile);
+      fs.writeFileSync(configfile, JSON.stringify(defaultconfig, null, 2));
+      process.exit(0);
+      break;
+    case 'n': // dry-run
+      dryrun = true;
+      break;
+    case 't': // tags only
+      tagsonly = true;
+      break;
+    case 'u': // check for updates
+      latest.checkupdate(package, function(ret, msg) {
+        console.log(msg);
+        process.exit(ret);
+      });
+      return;
+      break;
+    case 'v': // version
+      console.log(package.version);
+      process.exit(0);
+      break;
+    default:
+      console.error(usage());
+      process.exit(1);
+      break;
+  }
+}
+var files = process.argv.slice(parser.optind());
+
+// Try to get the config file if format not supplied
 var config = {};
-try {
-  config = JSON.parse(fs.readFileSync(config_file));
-} catch (e) {
-  console.error('Error reading %s -- invoke with --init to create this file\n',
-      config_file);
+if (!format) {
+  try {
+    config = require(configfile);
+  } catch (e) {
+    console.error('error reading %s: running with default config', configfile);
+    console.error('invoke with --init to create the config file');
+  }
 }
 
 // Loop over the file arguments
-args.forEach(function(file) {
+files.forEach(function(file) {
   var parser = new musicmetadata(fs.createReadStream(file));
   parser.on('metadata', function(meta) {
     console.log('\n----- processing %s -----\n', file);
 
     // Only print the tags if --tags is supplied
-    if (tags_only) return console.log(meta);
+    if (tagsonly) return console.log(meta);
 
     // Check that all arguments are present
     if (!check_tags(meta)) {
-      console.error('Error reading tags/not all tags present');
+      console.error('error reading tags/not all tags present');
       console.error(meta);
       return;
     }
@@ -152,9 +171,9 @@ args.forEach(function(file) {
     meta.ext = meta.ext.split('.')[1];
     var new_path = make_new_path(meta);
 
-    console.log('Moving: %s', file);
-    console.log('->  To: %s', new_path);
-    if (dry_run) return console.log('No action taken');
+    console.log('moving: %s', file);
+    console.log('->  to: %s', new_path);
+    if (dryrun) return console.log('no action taken');
 
     // Make the folders and file
     mkdirp.sync(path.dirname(new_path));
