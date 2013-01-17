@@ -147,8 +147,10 @@ if (!format) {
   try {
     config = require(configfile);
   } catch (e) {
-    console.error('error reading %s: running with default config', configfile);
-    console.error('invoke with --init to create the config file');
+    console.error('warn: error reading '.yellow + configfile.cyan +
+        ', running with default config'.yellow);
+    console.error('invoke with '.yellow + '--init'.cyan +
+        ' to create the config file'.yellow);
   }
 }
 
@@ -156,14 +158,15 @@ if (!format) {
 files.forEach(function(file) {
   var parser = new musicmetadata(fs.createReadStream(file));
   parser.on('metadata', function(meta) {
-    console.log('\n----- processing %s -----\n', file);
+    console.log('processing: %s'.cyan, file.green);
+    meta.filename = file;
 
     // Only print the tags if --tags is supplied
-    if (tagsonly) return console.log(meta);
+    if (tagsonly) return console.log(util.inspect(meta, false, null, true));
 
     // Check that all arguments are present
     if (!check_tags(meta)) {
-      console.error('error reading tags/not all tags present');
+      console.error('error reading tags/not all tags present'.red);
       console.error(meta);
       return;
     }
@@ -173,13 +176,12 @@ files.forEach(function(file) {
     meta.ext = meta.ext.split('.')[1];
     var new_path = make_new_path(meta);
 
-    console.log('moving: %s', file);
-    console.log('->  to: %s', new_path);
-    if (dryrun) return console.log('no action taken');
+    console.log('moving: %s'.cyan, file.yellow);
+    console.log('->  to: %s'.cyan, new_path.yellow);
+    if (dryrun) return console.log('no action taken'.magenta);
 
     // Make the folders and file
     mkdirp.sync(path.dirname(new_path));
     fs.renameSync(file, new_path);
-
   });
 });
