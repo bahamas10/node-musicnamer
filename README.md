@@ -21,17 +21,16 @@ and it will do its thing on them.
     ~$ musicnamer -h
     Usage: musicnamer.js file1.mp3 file2.mp3 file3.mp3 ...
 
-    Given a list of files from the command line, rename them to
-    a clean filename (default '%artist%/%album%/%trackno% - %title%.%ext%')
+    given a list of files from the command line, rename them
+    based on their id3 tags
 
-
-    Options (must be given as the first argument; all options are mutually exclusive)
-      --init    | -i: Create a config file at ~/.musicnamer.json
-      --dry-run | -n: Don't actually rename files, just print what actions would be taken
-      --tags    | -t: Just print the tags from the files processesd, assumes --dry-run
-      --updates | -u: Check for available updates
-      --version | -v: Print the version number and exit
-      --help    | -h: Print this message and exit
+    -h|--help   : print this message and exit
+    -i|--init   : create a config file at /Users/dave/.musicnamer.json
+    -f|--format : custom format line to use (defaults to :artist/:album/:trackno - :title.:ext)
+    -n|--dry-run: don't actually rename files, just print what actions would be taken
+    -t|--tags   : just print the tags from the files processesd, assumes --dry-run
+    -u|--updates: check for available updates
+    -v|--version: print the version number and exit
 
 Examples
 --------
@@ -127,11 +126,11 @@ format that will be used if the config file is not present.
 
 Possible options for variables are:
 
-    %artist%  : artist name
-    %album%   : album name
-    %trackno% : track number
-    %title%   : track title
-    %ext%     : file extension
+* `:artist`: artist name
+* `:album`: album name
+* `:trackno`: track number
+* `:title`: track title
+* `:ext`: file extension
 
 
 Installation
