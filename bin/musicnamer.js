@@ -23,6 +23,8 @@ var getopt = require('posix-getopt');
 var configfile = path.join(process.env.HOME, '.musicnamer.json');
 var package = require('../package.json');
 
+require('colors');
+
 /**
  * Usage
  *
@@ -35,13 +37,13 @@ function usage() {
     'given a list of files from the command line, rename them',
     'based on their id3 tags',
     '',
-    '-h|--help   : print this message and exit',
-    '-i|--init   : create a config file at %s',
-    '-f|--format : custom format line to use (defaults to %s)',
-    '-n|--dry-run: don\'t actually rename files, just print what actions would be taken',
-    '-t|--tags   : just print the tags from the files processesd, assumes --dry-run',
-    '-u|--updates: check for available updates',
-    '-v|--version: print the version number and exit'
+    '-h, --help       print this message and exit',
+    '-i, --init       create a config file at %s',
+    '-f, --format     custom format line to use (defaults to %s)',
+    '-n, --dry-run    don\'t actually rename files, just print what actions would be taken',
+    '-t, --tags       just print the tags from the files processesd, assumes --dry-run',
+    '-u, --updates    check for available updates',
+    '-v, --version    print the version number and exit'
   ].join('\n'), path.basename(process.argv[1]), configfile, defaultconfig.format);
 }
 

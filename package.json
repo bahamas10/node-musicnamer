@@ -12,7 +12,8 @@
     "musicmetadata": "~ 0.2.0",
     "latest": "~ 0.1.0",
     "mkdirp": "~ 0.3.3",
-    "posix-getopt": "~1.0.0"
+    "posix-getopt": "~1.0.0",
+    "colors": "~0.6.0-1"
   },
   "devDependencies": {},
   "optionalDependencies": {},
