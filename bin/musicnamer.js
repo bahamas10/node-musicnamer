@@ -147,10 +147,10 @@ if (!format) {
   try {
     config = require(configfile);
   } catch (e) {
-    console.error('warn: error reading '.yellow + configfile.cyan +
+    console.error('warn:'.cyan + ' error reading '.yellow + configfile.green +
         ', running with default config'.yellow);
-    console.error('invoke with '.yellow + '--init'.cyan +
-        ' to create the config file'.yellow);
+    console.error('warn:'.cyan + ' invoke with '.yellow + '--init'.green +
+        ' to create the config file\n'.yellow);
   }
 }
 
@@ -158,7 +158,7 @@ if (!format) {
 files.forEach(function(file) {
   var parser = new musicmetadata(fs.createReadStream(file));
   parser.on('metadata', function(meta) {
-    console.log('processing: %s'.cyan, file.green);
+    console.log('processing: %s'.cyan, path.basename(file).green);
     meta.filename = file;
 
     // Only print the tags if --tags is supplied

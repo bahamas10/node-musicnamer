@@ -38,11 +38,11 @@ Examples
 To invoke `musicnamer`, simply pass a file over the command line as an argument
 
     dave @ [ bahamas10 :: (SunOS) ] ~ $ musicnamer somesong.mp3
-    Error reading /home/dave/.musicnamer.json -- invoke with --init to create this file
+    warn: error reading /home/dave/.musicnamer.json, running with default config
+    warn: invoke with --init to create the config file
 
-    ----- processing somesong.mp3 -----
-
-    Moving: somesong.mp3
+    processing: somesong.mp3
+    moving: /home/dave/somesong.mp3
     ->  To: BEING/Arrival/12 - The Singularity (Cosmists II).mp3
 
 Music namer renamed the file for us.  What effectively happened here is this
@@ -55,7 +55,7 @@ We can see the error message above complaining because the config file was not f
 unreadable.  We can fix this warning with this:
 
     dave @ [ bahamas10 :: (SunOS) ] ~ $ musicnamer --init
-    Writing config to /home/dave/.musicnamer.json
+    writing config to /home/dave/.musicnamer.json
 
 More details on the configuration file can be found in the `Configuration` section below.
 
@@ -64,22 +64,19 @@ them without testing.  You can run `musicnamer` with a dry run option to show wh
 *would* have been taken.
 
     dave @ [ bahamas10 :: (SunOS) ] ~ $ musicnamer --dry-run somesong.mp3
-    ----- processing somesong.mp3 -----
-
-    Moving: somesong.mp3
-    ->  To: BEING/Arrival/12 - The Singularity (Cosmists II).mp3
-    No action taken
+    moving: somesong.mp3
+    ->  to: BEING/Arrival/12 - The Singularity (Cosmists II).mp3
+    no action taken
 
 As you can see, the warning message no longer shows because we have created a config file.
 Also, `musicnamer` just printed out what it would have done, but didn't actually call rename(2)
-on any of the files.
+on any of the files or make any new directories.
 
 You can also test out files to get a glimpse into how `musicnamer` sees your files.  There is a
 command line switch to have `musicnamer` print out the tags of files without renaming them.
 
     dave @ [ bahamas10 :: (SunOS) ] ~ $ musicnamer --tags music/*.mp3
-    ----- processing song1.mp3 -----
-
+    processing: song.mp3
     { title: 'Stimulus',
       artist: [ 'The Omega Experiment' ],
       albumartist: [],
@@ -91,9 +88,7 @@ command line switch to have `musicnamer` print out the tags of files without ren
       picture:
        [ { format: '浩条⽥灪来cover\u0000',
            data: <Buffer 00 ff db 00 43 00 02 01 01 01 01 01 02 01 01 01 02 02 02 02 02 04 03 02 02 02 02 05 04 04 03 04 06 05 06 06 06 05 06 06 06 07 09 08 06 07 09 07 06 06 08 ...> } ] }
-
-    ----- processing song2.mp3 -----
-
+    processing: song2.mp3
     { title: 'Motion',
       artist: [ 'The Omega Experiment' ],
       albumartist: [],
@@ -108,7 +103,6 @@ command line switch to have `musicnamer` print out the tags of files without ren
 
 This output is good to look for debugging information, without making
 any modifications to the filesystem.
-
 
 Configuration
 -------------
@@ -131,6 +125,8 @@ Possible options for variables are:
 * `:trackno`: track number
 * `:title`: track title
 * `:ext`: file extension
+
+Format can also be passed in from the command line like: `--format 'format string'`
 
 
 Installation
