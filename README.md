@@ -3,8 +3,8 @@ musicnamer
 
 Organize your music collection
 
-Rename music files to clean filenames based
-on their music tags.  By default, `musicnamer` can take your music files
+Rename music files based
+on their tags.  By default, `musicnamer` will take your music files
 and rename them to a format like:
 
     :artist/:album/:trackno - :title.:ext
@@ -25,7 +25,7 @@ and it will do its thing on them.
     based on their id3 tags
 
     -h, --help       print this message and exit
-    -i, --init       create a config file at /Users/dave/.musicnamer.json
+    -i, --init       create a config file at ~/.musicnamer.json
     -f, --format     custom format line to use (defaults to :artist/:album/:trackno - :title.:ext)
     -n, --dry-run    don't actually rename files, just print what actions would be taken
     -t, --tags       just print the tags from the files processesd, assumes --dry-run
@@ -38,18 +38,21 @@ Examples
 To invoke `musicnamer`, simply pass a file over the command line as an argument
 
     dave @ [ bahamas10 :: (SunOS) ] ~ $ musicnamer somesong.mp3
-    warn: error reading /home/dave/.musicnamer.json, running with default config
+    warn: error reading ~/.musicnamer.json, running with default config
     warn: invoke with --init to create the config file
 
     processing: somesong.mp3
     moving: /home/dave/somesong.mp3
-    ->  To: BEING/Arrival/12 - The Singularity (Cosmists II).mp3
+    ->  to: BEING/Arrival/12 - The Singularity (Cosmists II).mp3
 
 Music namer renamed the file for us.  What effectively happened here is this
 
-    $ mv somesong.mp3 "BEING/Arrival/12 - The Singularity (Cosmists II).mp3"
+``` bash
+mkdir -p "BEING/Arrival"
+mv somesong.mp3 "BEING/Arrival/12 - The Singularity (Cosmists II).mp3"
+```
 
-**NOTE**: `musicnamer` by default renames files relative to your current directory.
+**NOTE**: `musicnamer` renames files relative to your current directory.
 
 We can see the error message above complaining because the config file was not found/
 unreadable.  We can fix this warning with this:
