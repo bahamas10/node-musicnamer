@@ -40,6 +40,7 @@ function usage() {
     '-f, --format     custom format line to use (defaults to %s)',
     '-h, --help       print this message and exit',
     '-i, --init       create a config file at %s',
+    '-j, --json       output json, assumes --dry-run and --tags',
     '-n, --dry-run    don\'t actually rename files, just print what actions would be taken',
     '-t, --tags       just print the tags from the files processesd, assumes --dry-run',
     '-u, --updates    check for available updates',
@@ -53,7 +54,7 @@ function usage() {
  * Check a given set of metadata to make sure all tags are present
  */
 function check_tags(meta) {
-  return meta.album && meta.title && meta.artist.length !== 0;
+  return meta.album && meta.title && meta.artist.length;
 }
 
 /**
@@ -92,15 +93,16 @@ function pad(s) {
 }
 
 // command line arguments
-var options = 'f:(format)h(help)i(init)n(dry-run)t(tags)u(updates)v(version)';
+var options = 'f:(format)h(help)i(init)j(json)n(dry-run)t(tags)u(updates)v(version)';
 var parser = new getopt.BasicParser(options, process.argv);
 
-var tagsonly = false;
-var dryrun = false;
-var format;
 var defaultconfig = {
   format: ':artist/:album/:trackno - :title.:ext'
 };
+var dryrun = false;
+var format;
+var json = false;
+var tagsonly = false;
 var option;
 while ((option = parser.getopt()) !== undefined) {
   switch (option.option) {
@@ -116,11 +118,17 @@ while ((option = parser.getopt()) !== undefined) {
       fs.writeFileSync(configfile, JSON.stringify(defaultconfig, null, 2));
       process.exit(0);
       break;
+    case 'j': // json
+      dryrun = true;
+      tagsonly = true;
+      json = true;
+      break;
     case 'n': // dry-run
       dryrun = true;
       break;
     case 't': // tags only
       tagsonly = true;
+      dryrun = true;
       break;
     case 'u': // check for updates
       latest.checkupdate(package, function(ret, msg) {
@@ -158,8 +166,10 @@ if (!format) {
 files.forEach(function(file) {
   var parser = new musicmetadata(fs.createReadStream(file));
   parser.on('metadata', function(meta) {
-    console.log('processing: %s'.cyan, path.basename(file).green);
     meta.filename = file;
+    if (json) return console.log(JSON.stringify(meta, null, 2));
+
+    console.log('processing: %s'.cyan, path.basename(file).green);
 
     // Only print the tags if --tags is supplied
     if (tagsonly) return console.log(util.inspect(meta, false, null, true));
