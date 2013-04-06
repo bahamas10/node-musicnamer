@@ -167,7 +167,11 @@ files.forEach(function(file) {
   var parser = new musicmetadata(fs.createReadStream(file));
   parser.on('metadata', function(meta) {
     meta.filename = file;
-    if (json) return console.log(JSON.stringify(meta, null, 2));
+    if (json) {
+      meta.picture = Object.keys(meta.picture).length;
+      console.log(JSON.stringify(meta, null, 2));
+      return;
+    }
 
     console.log('processing: %s'.cyan, path.basename(file).green);
 
