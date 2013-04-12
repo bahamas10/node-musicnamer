@@ -15,7 +15,6 @@ var fs = require('fs');
 var path = require('path');
 var util = require('util');
 
-var latest = require('latest');
 var mkdirp = require('mkdirp');
 var musicmetadata = require('musicmetadata');
 var getopt = require('posix-getopt');
@@ -131,7 +130,7 @@ while ((option = parser.getopt()) !== undefined) {
       dryrun = true;
       break;
     case 'u': // check for updates
-      latest.checkupdate(package, function(ret, msg) {
+      require('latest').checkupdate(package, function(ret, msg) {
         console.log(msg);
         process.exit(ret);
       });
