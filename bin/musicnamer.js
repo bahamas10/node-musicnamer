@@ -44,7 +44,7 @@ function usage() {
     '-t, --tags       just print the tags from the files processesd, assumes --dry-run',
     '-u, --updates    check for available updates',
     '-v, --version    print the version number and exit'
-  ].join('\n'), path.basename(process.argv[1]), configfile, defaultconfig.format);
+  ].join('\n'), path.basename(process.argv[1]), defaultconfig.format, configfile);
 }
 
 /**
@@ -52,8 +52,16 @@ function usage() {
  *
  * Check a given set of metadata to make sure all tags are present
  */
-function check_tags(meta) {
-  return meta.album && meta.title && meta.artist.length;
+function check_tags(requiredTags, meta) {
+  if (requiredTags.artist && meta.artist.length < 1)
+    return false;
+  if (requiredTags.album && !meta.album)
+    return false;
+  if (requiredTags.title && !meta.title)
+    return false;
+  if (requiredTags.trackno && !meta.track.hasOwnProperty('no'))
+    return false;
+  return true;
 }
 
 /**
@@ -68,7 +76,7 @@ function make_new_path(meta) {
           .replace('%trackno%', ':trackno')
           .replace('%title%', ':title')
           .replace('%ext%', ':ext')
-          .replace(':artist', filter(meta.artist[0]))
+          .replace(':artist', filter(meta.artist[0] || ''))
           .replace(':album', filter(meta.album))
           .replace(':trackno', pad(meta.track.no))
           .replace(':title', filter(meta.title))
@@ -135,7 +143,6 @@ while ((option = parser.getopt()) !== undefined) {
         process.exit(ret);
       });
       return;
-      break;
     case 'v': // version
       console.log(package.version);
       process.exit(0);
@@ -160,6 +167,18 @@ if (!format) {
         ' to create the config file\n'.yellow);
   }
 }
+format = format || config.format || defaultconfig.format;
+format = format.replace('%artist%', ':artist')
+    .replace('%album%', ':album')
+    .replace('%trackno%', ':trackno')
+    .replace('%title%', ':title')
+    .replace('%ext%', ':ext');
+var requiredTags = {
+  artist: format.match(/:artist/),
+  album: format.match(/:album/),
+  trackno: format.match(/:trackno/),
+  title: format.match(/:title/),
+};
 
 // Loop over the file arguments
 files.forEach(function(file) {
@@ -175,10 +194,11 @@ files.forEach(function(file) {
     console.log('processing: %s'.cyan, path.basename(file).green);
 
     // Only print the tags if --tags is supplied
-    if (tagsonly) return console.log(util.inspect(meta, false, null, true));
+    if (tagsonly)
+      return console.log(util.inspect(meta, false, null, true));
 
     // Check that all arguments are present
-    if (!check_tags(meta)) {
+    if (!check_tags(requiredTags, meta)) {
       console.error('error reading tags/not all tags present'.red);
       console.error(meta);
       return;
