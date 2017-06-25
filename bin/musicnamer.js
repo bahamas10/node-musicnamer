@@ -76,11 +76,13 @@ function make_new_path(meta) {
           .replace('%trackno%', ':trackno')
           .replace('%title%', ':title')
           .replace('%ext%', ':ext')
+          .replace('%year%', ':year')
           .replace(':artist', filter(meta.artist[0] || ''))
           .replace(':album', filter(meta.album))
           .replace(':trackno', pad(meta.track.no))
           .replace(':title', filter(meta.title))
-          .replace(':ext', filter(meta.ext));
+          .replace(':ext', filter(meta.ext))
+          .replace(':year', filter(meta.year));
 }
 
 /**
