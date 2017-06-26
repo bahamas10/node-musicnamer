@@ -129,6 +129,7 @@ Possible options for variables are:
 * `:trackno`: track number
 * `:title`: track title
 * `:ext`: file extension
+* `:year`: track year
 
 Format can also be passed in from the command line like: `--format 'format string'`
 
